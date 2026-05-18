@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Padel Paddle 3D Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: transparent;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    #canvas-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    /* Header & Hint hidden */
+    header {
+      display: none;
+    }
+
+    #hint {
+      display: none;
+    }
+
+    /* Loading overlay */
+    #loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      z-index: 20;
+      gap: 20px;
+      transition: opacity 0.6s ease;
+    }
+
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #EDAB18;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #loading p {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Loading 3D Model…</p>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <header>
+    <h1>Padel Paddle</h1>
+    <span>3D Viewer</span>
+  </header>
+
+  <div id="hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-click to pan</div>
+
+  <!-- Three.js ES Modules via importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+    import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+    // OrbitControls supprimé – rotation directe de l'objet (plus cohérent avec postMessage)
+
+    // ── Scene setup ──────────────────────────────────────────────
+    const container = document.getElementById('canvas-container');
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    // background transparent – no color, no fog
+
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 100);
+    camera.position.set(0, 0.6, 5);
+    camera.lookAt(0, 0.4, 0);
+
+    // ── Lighting ─────────────────────────────────────────────────
+    // Ambient
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+    // Key light
+    const key = new THREE.DirectionalLight(0xffffff, 2.5);
+    key.position.set(3, 6, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    scene.add(key);
+
+    // Fill light (cool blue)
+    const fill = new THREE.DirectionalLight(0x88aaff, 0.8);
+    fill.position.set(-4, 2, -3);
+    scene.add(fill);
+
+    // Rim light (warm red — matches paddle colour)
+    const rim = new THREE.DirectionalLight(0xff3300, 0.6);
+    rim.position.set(0, -3, -4);
+    scene.add(rim);
+
+    // Ground reflection
+    const ground = new THREE.HemisphereLight(0x111122, 0x443333, 0.5);
+    scene.add(ground);
+
+    // Ground plane removed for transparent background
+
+    // ── État externe (contrôlé via postMessage depuis la page parente) ──
+    let loadedObject = null;
+    let extActive = false;
+    let extRotY = 0, extRotZ = -0.05, extOpacity = 1;
+    let autoRotAngle = 0; // rotation lente avant scroll
+
+    // ── Float animation ─────────────────────────────────────────
+    let floatT = 0;
+
+    // ── Load OBJ + MTL ───────────────────────────────────────────
+    const mtlLoader = new MTLLoader();
+    mtlLoader.setPath('obj/');
+    mtlLoader.load('objPaddle.mtl', (materials) => {
+      materials.preload();
+
+      const objLoader = new OBJLoader();
+      objLoader.setMaterials(materials);
+      objLoader.setPath('obj/');
+      objLoader.load(
+        'objPaddle.obj',
+        (object) => {
+          // Centre + scale model
+          const box = new THREE.Box3().setFromObject(object);
+          const centre = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scale = 3 / maxDim;
+
+          object.position.sub(centre.multiplyScalar(scale));
+          object.scale.setScalar(scale);
+          object.castShadow = true;
+
+          object.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+              if (child.material) {
+                // Boost material quality
+                const mats = Array.isArray(child.material) ? child.material : [child.material];
+                mats.forEach(m => {
+                  m.roughness = m.roughness ?? 0.5;
+                  m.metalness = m.metalness ?? 0.3;
+                  m.needsUpdate = true;
+                });
+              }
+            }
+          });
+
+          scene.add(object);
+          loadedObject = object;
+
+          // Rendre les matériaux transparents dès le début
+          object.traverse(c => {
+            if (!c.isMesh) return;
+            [].concat(c.material).forEach(m => { m.transparent = true; m.needsUpdate = true; });
+          });
+
+          // Hide loading screen
+          document.getElementById('loading').classList.add('hidden');
+        },
+        (xhr) => {
+          // progress (optional)
+        },
+        (err) => {
+          console.error('OBJ load error:', err);
+          document.querySelector('#loading p').textContent = 'Failed to load model';
+        }
+      );
+    });
+
+    // ── Resize handler ───────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ── postMessage listener (contrôle depuis page parente) ─────
+    window.addEventListener('message', e => {
+      if (!e.data || e.data.type !== 'racket') return;
+      if (!extActive) {
+        extActive = true;
+      }
+      if (e.data.rotY !== undefined) extRotY = e.data.rotY;
+      if (e.data.rotZ !== undefined) extRotZ = e.data.rotZ;
+      if (e.data.opacity !== undefined) extOpacity = e.data.opacity;
+    });
+
+    // ── Render loop ──────────────────────────────────────────────
+    function animate() {
+      requestAnimationFrame(animate);
+      floatT += 0.016;
+      const floatY = Math.sin(floatT * (2 * Math.PI / 2.8)) * 0.18;
+
+      if (loadedObject) {
+        if (extActive) {
+          // Contrôle externe via postMessage : face → profil selon scroll
+          loadedObject.rotation.y = extRotY;
+          loadedObject.rotation.z = extRotZ;
+          loadedObject.position.y = floatY;
+          loadedObject.traverse(c => {
+            if (!c.isMesh) return;
+            [].concat(c.material).forEach(m => { m.opacity = extOpacity; });
+          });
+        } else {
+          // Auto-rotation lente avant que l'user scrolle
+          autoRotAngle += 0.003;
+          loadedObject.rotation.y = autoRotAngle;
+          loadedObject.position.y = floatY;
+        }
+      }
+
+      camera.lookAt(0, 0.4, 0);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+
+</html>
