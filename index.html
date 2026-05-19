@@ -678,8 +678,8 @@
         /* ── phone to the right ── */
         #orb-phone-right {
             flex-shrink: 0;
-            width: 250px;
-            height: 510px;
+            width: 290px;
+            height: 580px;
             background: #000000;
             border-radius: 44px;
             border: 6px solid #1c1c1e;
@@ -1050,7 +1050,7 @@
         /* === FLIP CARD === */
         .flip-card {
             perspective: 1000px;
-            height: 260px;
+            height: 360px;
         }
 
         .flip-card-inner {
@@ -1509,17 +1509,26 @@
         <section id="section-features" class="py-32">
             <div class="max-w-7xl mx-auto px-8">
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <!-- F1 -->
+                    <!-- F1 Partenaire -->
                     <div class="flip-card">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                                    <span class="material-symbols-outlined text-primary text-3xl">person_search</span>
+                            <div class="flip-card-front" style="justify-content:flex-start;padding:1.4rem;gap:14px;">
+                                <div style="display:flex;justify-content:center;">
+                                    <div
+                                        style="width:82px;height:162px;background:#050505;border-radius:20px;border:2px solid #2a2a2a;overflow:hidden;position:relative;box-shadow:0 8px 28px rgba(0,0,0,0.75);">
+                                        <div
+                                            style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:6px;background:#111;border-radius:3px;z-index:2;">
+                                        </div>
+                                        <img src="APP/PARTEUNIER.jpeg" alt="Partenaire"
+                                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;">
+                                    </div>
                                 </div>
-                                <h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Trouve le bon
-                                    partenaire</h3>
-                                <p class="text-on-surface-variant text-sm leading-relaxed">Joue avec des personnes
-                                    proches de toi, selon ton niveau et tes disponibilités.</p>
+                                <div>
+                                    <h3 class="font-headline text-xl font-bold mb-2 text-on-surface">Trouve le bon
+                                        partenaire</h3>
+                                    <p class="text-on-surface-variant text-sm leading-relaxed">Joue avec des personnes
+                                        proches de toi, selon ton niveau et tes disponibilités.</p>
+                                </div>
                             </div>
                             <span class="flip-card-hint">&#x1F4F1; Tap</span>
                             <div class="flip-card-back">
@@ -1531,17 +1540,26 @@
                             </div>
                         </div>
                     </div>
-                    <!-- F2 -->
+                    <!-- F2 Coach -->
                     <div class="flip-card">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                                    <span class="material-symbols-outlined text-primary text-3xl">school</span>
+                            <div class="flip-card-front" style="justify-content:flex-start;padding:1.4rem;gap:14px;">
+                                <div style="display:flex;justify-content:center;">
+                                    <div
+                                        style="width:82px;height:162px;background:#050505;border-radius:20px;border:2px solid #2a2a2a;overflow:hidden;position:relative;box-shadow:0 8px 28px rgba(0,0,0,0.75);">
+                                        <div
+                                            style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:6px;background:#111;border-radius:3px;z-index:2;">
+                                        </div>
+                                        <img src="APP/COACH.jpeg" alt="Coach"
+                                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;">
+                                    </div>
                                 </div>
-                                <h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Réserve un cours avec
-                                    un coach</h3>
-                                <p class="text-on-surface-variant text-sm leading-relaxed">Progresse plus vite grâce à
-                                    des coachs disponibles près de chez toi.</p>
+                                <div>
+                                    <h3 class="font-headline text-xl font-bold mb-2 text-on-surface">Réserve un cours
+                                        avec un coach</h3>
+                                    <p class="text-on-surface-variant text-sm leading-relaxed">Progresse plus vite grâce
+                                        à des coachs disponibles près de chez toi.</p>
+                                </div>
                             </div>
                             <span class="flip-card-hint">&#x1F4F1; Tap</span>
                             <div class="flip-card-back">
@@ -1553,16 +1571,25 @@
                             </div>
                         </div>
                     </div>
-                    <!-- F3 -->
+                    <!-- F3 Message -->
                     <div class="flip-card">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                                    <span class="material-symbols-outlined text-primary text-3xl">add_circle</span>
+                            <div class="flip-card-front" style="justify-content:flex-start;padding:1.4rem;gap:14px;">
+                                <div style="display:flex;justify-content:center;">
+                                    <div
+                                        style="width:82px;height:162px;background:#050505;border-radius:20px;border:2px solid #2a2a2a;overflow:hidden;position:relative;box-shadow:0 8px 28px rgba(0,0,0,0.75);">
+                                        <div
+                                            style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:6px;background:#111;border-radius:3px;z-index:2;">
+                                        </div>
+                                        <img src="APP/MESSAGE.jpeg" alt="Message"
+                                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;">
+                                    </div>
                                 </div>
-                                <h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Crée ta partie</h3>
-                                <p class="text-on-surface-variant text-sm leading-relaxed">Propose un match, laisse
-                                    d'autres joueurs te rejoindre et passe à l'action.</p>
+                                <div>
+                                    <h3 class="font-headline text-xl font-bold mb-2 text-on-surface">Crée ta partie</h3>
+                                    <p class="text-on-surface-variant text-sm leading-relaxed">Propose un match, laisse
+                                        d'autres joueurs te rejoindre et passe à l'action.</p>
+                                </div>
                             </div>
                             <span class="flip-card-hint">&#x1F4F1; Tap</span>
                             <div class="flip-card-back">
@@ -1574,24 +1601,35 @@
                             </div>
                         </div>
                     </div>
-                    <!-- F4 -->
+                    <!-- F4 Profil -->
                     <div class="flip-card">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                                    <span class="material-symbols-outlined text-primary text-3xl">map</span>
+                            <div class="flip-card-front" style="justify-content:flex-start;padding:1.4rem;gap:14px;">
+                                <div style="display:flex;justify-content:center;">
+                                    <div
+                                        style="width:82px;height:162px;background:#050505;border-radius:20px;border:2px solid #2a2a2a;overflow:hidden;position:relative;box-shadow:0 8px 28px rgba(0,0,0,0.75);">
+                                        <div
+                                            style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:6px;background:#111;border-radius:3px;z-index:2;">
+                                        </div>
+                                        <img src="APP/PROFIL.jpeg" alt="Profil"
+                                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;">
+                                    </div>
                                 </div>
-                                <h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Découvre les terrains
-                                    autour de toi</h3>
-                                <p class="text-on-surface-variant text-sm leading-relaxed">Repère plus facilement où
-                                    jouer et gagne du temps.</p>
+                                <div>
+                                    <h3 class="font-headline text-xl font-bold mb-2 text-on-surface">Gère ton profil
+                                        joueur</h3>
+                                    <p class="text-on-surface-variant text-sm leading-relaxed">Personnalise ton niveau,
+                                        tes disponibilités et trouve les meilleurs partenaires.</p>
+                                </div>
                             </div>
                             <span class="flip-card-hint">&#x1F4F1; Tap</span>
                             <div class="flip-card-back">
-                                <span class="material-symbols-outlined text-4xl mb-4" style="color:#1a0c00">map</span>
-                                <h3 class="font-headline text-xl font-black mb-3">Terrains géolocalisés</h3>
-                                <p class="text-sm leading-relaxed font-medium">Carte interactive de tous les clubs et
-                                    terrains près de toi. Disponibilités en temps réel.</p>
+                                <span class="material-symbols-outlined text-4xl mb-4"
+                                    style="color:#1a0c00">account_circle</span>
+                                <h3 class="font-headline text-xl font-black mb-3">Profil personnalisé</h3>
+                                <p class="text-sm leading-relaxed font-medium">Indique ton sport, ton niveau et tes
+                                    préférences. Ton profil est ton passeport pour jouer avec la communauté CourtLinker.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -1799,11 +1837,11 @@
         // ── Radial Orbital Timeline ────────────────────────────────────────
         (function () {
             var steps = [
-                { id: 1, icon: 'account_circle', num: '01', title: 'Profil', label: 'Crée ton profil', desc: 'Indique ton sport (tennis ou padel), ton niveau et ce que tu recherches — un partenaire, un coach ou une partie.', items: ['Profil en 2 minutes', 'Tennis & Padel', 'Niveau personnalisé'], img: 'screenshot-step1.png' },
-                { id: 2, icon: 'manage_search', num: '02', title: 'Recherche', label: 'Trouve un partenaire', desc: 'Parcours les profils de joueurs autour de toi. Filtre par niveau, sport et disponibilité.', items: ['Géolocalisation', 'Filtres avancés', 'Profils vérifiés'], img: 'screenshot-step2.png' },
-                { id: 3, icon: 'school', num: '03', title: 'Coach', label: 'Réserve un cours', desc: 'Consulte les coachs certifiés, leurs créneaux et tarifs. Réserve directement depuis l’app.', items: ['Coachs certifiés', 'Avis vérifiés', 'Réservation 1 clic'], img: 'screenshot-step3.png' },
-                { id: 4, icon: 'add_circle', num: '04', title: 'Partie', label: 'Organise une partie', desc: 'Crée une partie ouverte ou privée, définis le niveau requis et remplis le terrain en quelques secondes.', items: ['Partie ouverte / privée', 'Notifications en direct', 'Gestion simplifiée'], img: 'screenshot-step4.png' },
-                { id: 5, icon: 'sports_tennis', num: '05', title: 'Joue', label: 'Joue et progresse', desc: 'Moins de temps à chercher, plus de temps à jouer. Suis ta progression et recommence !', items: ['Suivi de progression', 'Historique des matchs', 'Communauté active'], img: 'screenshot-step5.png' }
+                { id: 1, icon: 'account_circle', num: '01', title: 'Profil', label: 'Crée ton profil', desc: 'Indique ton sport (tennis ou padel), ton niveau et ce que tu recherches — un partenaire, un coach ou une partie.', items: ['Profil en 2 minutes', 'Tennis & Padel', 'Niveau personnalisé'], img: 'APP/PROFIL.jpeg' },
+                { id: 2, icon: 'manage_search', num: '02', title: 'Recherche', label: 'Trouve un partenaire', desc: 'Parcours les profils de joueurs autour de toi. Filtre par niveau, sport et disponibilité.', items: ['Géolocalisation', 'Filtres avancés', 'Profils vérifiés'], img: 'APP/PARTEUNIER.jpeg' },
+                { id: 3, icon: 'school', num: '03', title: 'Coach', label: 'Réserve un cours', desc: 'Consulte les coachs certifiés, leurs créneaux et tarifs. Réserve directement depuis l’app.', items: ['Coachs certifiés', 'Avis vérifiés', 'Réservation 1 clic'], img: 'APP/COACH.jpeg' },
+                { id: 4, icon: 'add_circle', num: '04', title: 'Partie', label: 'Organise une partie', desc: 'Crée une partie ouverte ou privée, définis le niveau requis et remplis le terrain en quelques secondes.', items: ['Partie ouverte / privée', 'Notifications en direct', 'Gestion simplifiée'], img: 'APP/PARTIE.jpeg' },
+                { id: 5, icon: 'sports_tennis', num: '05', title: 'Joue', label: 'Joue et progresse', desc: 'Moins de temps à chercher, plus de temps à jouer. Suis ta progression et recommence !', items: ['Suivi de progression', 'Historique des matchs', 'Communauté active'], img: 'APP/MESSAGE.jpeg' }
             ];
 
             var area = document.getElementById('orb-area');
