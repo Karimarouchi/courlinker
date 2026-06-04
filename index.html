@@ -1182,7 +1182,8 @@
 
     <main style="position:relative; pointer-events:auto;">
         <!-- Hero Section -->
-        <section id="section-hero" class="relative flex flex-col justify-center overflow-hidden" style="min-height:100dvh; padding-top:64px;">
+        <section id="section-hero" class="relative flex flex-col justify-center overflow-hidden"
+            style="min-height:100dvh; padding-top:64px;">
             <!-- Floating shapes background -->
             <div class="hero-glow-bg"></div>
             <div class="hero-top-fade"></div>
@@ -1325,7 +1326,7 @@
         <!-- DEMO Section – App Mockup -->
         <section class="py-24 bg-surface-container-low overflow-x-hidden" id="demo-section">
             <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row items-center gap-16"
-                style="position:relative; z-index:10;">
+                style="position:relative; z-index:10; display:none !important;">
                 <!-- Left copy -->
                 <div class="flex-1" id="demo-text">
                     <span
@@ -1387,14 +1388,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- App store badges – centrés horizontalement sous toute la section -->
-            <div
-                style="display:flex;justify-content:center;align-items:center;gap:20px;margin-top:40px;position:relative;z-index:10;">
-                <img src="app store.png" alt="App Store"
-                    style="height:60px;object-fit:contain;border-radius:10px;opacity:0.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
-                <img src="google play.png" alt="Google Play"
-                    style="height:60px;object-fit:contain;border-radius:10px;opacity:0.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
             </div>
         </section>
 
@@ -1531,7 +1524,7 @@
         <!-- How It Works Section – Radial Orbital Timeline -->
         <section class="steps-section bg-surface-container-lowest"
             style="user-select:none;cursor:default;height:calc(100vh - 7px);display:flex;flex-direction:column;justify-content:center;">
-            <div class="max-w-6xl mx-auto px-8 w-full">
+            <div class="max-w-6xl mx-auto px-8 w-full" style="background:#000000;border-radius:1.5rem;padding:2.5rem 2rem;">
                 <h2 class="font-headline text-4xl font-black mb-2 text-center reveal">Comment ça marche</h2>
                 <p class="text-center text-on-surface-variant mb-8 text-sm reveal reveal-delay-1">Découvre les étapes
                     pour jouer</p>
@@ -1566,7 +1559,9 @@
                             <span id="orb-pi-label"
                                 style="font-size:0.5rem;color:#2a2a2a;font-family:monospace;text-align:center;padding:0 8px;"></span>
                         </div>
-                        <img class="orb-pi-img" id="orb-pi-img" src="" alt="" style="display:none;" />
+                        <video class="orb-pi-img" id="orb-pi-img" autoplay muted loop playsinline style="display:block;">
+                            <source src="ScreenRecord-Application_1.mp4" type="video/mp4" />
+                        </video>
                     </div>
                 </div>
 
@@ -1617,6 +1612,14 @@
                                 progression et recommence !</div>
                         </div>
                     </div>
+                </div>
+
+                <!-- App store badges -->
+                <div style="display:flex;justify-content:center;align-items:center;gap:20px;margin-top:32px;">
+                    <img src="app store.png" alt="App Store"
+                        style="height:60px;object-fit:contain;border-radius:10px;opacity:0.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    <img src="google play.png" alt="Google Play"
+                        style="height:60px;object-fit:contain;border-radius:10px;opacity:0.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
                 </div>
             </div>
         </section>
@@ -1838,14 +1841,8 @@
 
                 var piIcon = document.getElementById('orb-pi-icon');
                 var piLabel = document.getElementById('orb-pi-label');
-                var piImg = document.getElementById('orb-pi-img');
                 if (piIcon) piIcon.textContent = s.icon;
-                if (piLabel) piLabel.textContent = s.img;
-                if (piImg) {
-                    piImg.style.display = '';
-                    piImg.src = s.img;
-                    piImg.onerror = function () { this.style.display = 'none'; };
-                }
+                if (piLabel) piLabel.textContent = '';
 
                 overlay.classList.remove('orb-visible');
                 if (phoneRight) phoneRight.classList.remove('orb-visible');
