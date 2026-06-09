@@ -1150,6 +1150,43 @@
                 transform: translateY(18px);
             }
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Back to top button */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #F5C842, #EDAB18);
+            border: none;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 0 28px rgba(237, 171, 24, 0.4);
+            transition: all 0.3s ease-in-out;
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 40px rgba(237, 171, 24, 0.6);
+        }
+
+        #back-to-top.show {
+            display: flex;
+        }
+
+        #back-to-top span {
+            color: #000;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 
@@ -1169,11 +1206,11 @@
             </div>
             <div class="hidden md:flex items-center gap-10 flex-1 justify-center">
                 <a class="text-[#EDAB18] font-bold border-b-2 border-[#EDAB18] pb-1 hover:opacity-80 transition-all duration-300"
-                    href="#">L'application</a>
-                <a class="text-zinc-400 font-medium hover:text-white transition-colors hover:opacity-80 transition-all duration-300"
-                    href="#">Pour les Coachs</a>
-                <a class="text-zinc-400 font-medium hover:text-white transition-colors hover:opacity-80 transition-all duration-300"
-                    href="#">À propos</a>
+                    href="#section-hero">L'application</a>
+                <a class="text-zinc-400 font-medium pb-1 hover:text-[#EDAB18] hover:border-b-2 hover:border-[#EDAB18] transition-all duration-300"
+                    href="#section-coach">Pour les Coachs</a>
+                <a class="text-zinc-400 font-medium pb-1 hover:text-[#EDAB18] hover:border-b-2 hover:border-[#EDAB18] transition-all duration-300"
+                    href="#section-about">À propos</a>
             </div>
 
         </div>
@@ -1217,9 +1254,7 @@
             </div>
             <div class="max-w-7xl mx-auto px-8 py-10 grid md:grid-cols-2 gap-8 items-center w-full">
                 <div class="relative z-10">
-                    <span
-                        class="inline-block px-4 py-1.5 rounded-full bg-surface-container-high text-primary text-xs font-bold tracking-widest uppercase mb-6">Lancement
-                        Prochain</span>
+                   
                     <h1
                         class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-[-0.04em] leading-[1.05] text-on-surface mb-6">
                         Trouve un partenaire. Réserve un cours. <span class="text-primary-fixed">Joue plus
@@ -1234,10 +1269,7 @@
                             class="primary-gradient text-on-primary font-bold px-8 py-4 rounded-xl text-lg hover:shadow-[0_0_20px_rgba(246,255,190,0.2)] transition-all scale-100 active:scale-95">
                             Rejoins la liste d'attente
                         </button>
-                        <button
-                            class="border border-outline-variant/15 text-on-surface font-semibold px-8 py-4 rounded-xl text-lg hover:bg-surface-container-high transition-colors">
-                            Découvrir CourtLinker
-                        </button>
+                    
                     </div>
                 </div>
                 <div class="relative flex justify-center items-center">
@@ -1579,7 +1611,7 @@
         </section>
 
         <!-- Coach Block -->
-        <section class="py-24 overflow-hidden">
+        <section id="section-coach" class="py-24 overflow-hidden">
             <div class="max-w-7xl mx-auto px-8">
                 <div
                     class="bg-surface-container-high rounded-xl p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
@@ -1609,7 +1641,7 @@
             </div>
         </section>
         <!-- Brand Emotional Section -->
-        <section class="py-32 bg-surface">
+        <section id="section-about" class="py-32 bg-surface">
             <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-20 items-center">
                 <div class="relative group">
                     <div
@@ -1841,9 +1873,73 @@
                 card.classList.toggle('flipped');
             });
         });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Active navbar link based on scroll position
+        const sections = ['section-hero', 'section-coach', 'section-about'];
+        const navLinks = {
+            'section-hero': document.querySelector('a[href="#section-hero"]'),
+            'section-coach': document.querySelector('a[href="#section-coach"]'),
+            'section-about': document.querySelector('a[href="#section-about"]')
+        };
+
+        function updateActiveLink() {
+            let currentSection = '';
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section && section.offsetTop <= window.scrollY + 100) {
+                    currentSection = sectionId;
+                }
+            });
+
+            Object.keys(navLinks).forEach(sectionId => {
+                if (navLinks[sectionId]) {
+                    if (sectionId === currentSection) {
+                        navLinks[sectionId].classList.add('text-[#EDAB18]', 'border-b-2', 'border-[#EDAB18]');
+                        navLinks[sectionId].classList.remove('text-zinc-400');
+                    } else {
+                        navLinks[sectionId].classList.remove('text-[#EDAB18]', 'border-b-2', 'border-[#EDAB18]');
+                        navLinks[sectionId].classList.add('text-zinc-400');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveLink);
+        updateActiveLink();
+
+        // Back to top button
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
 
-
+    <!-- Back to top button -->
+    <button id="back-to-top" aria-label="Back to top">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
 
 </body>
 
