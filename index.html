@@ -1553,7 +1553,7 @@
                         chez toi.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button
+                        <button onclick="scrollToCTAAndOpenModal()"
                             class="primary-gradient text-on-primary font-bold px-8 py-4 rounded-xl text-lg hover:shadow-[0_0_20px_rgba(246,255,190,0.2)] transition-all scale-100 active:scale-95">
                             Rejoins la liste d'attente
                         </button>
@@ -2551,6 +2551,17 @@
             if (!modal) return;
             document.body.style.overflow = 'hidden';
             modal.classList.add('is-open');
+        }
+        function scrollToCTAAndOpenModal() {
+            const target = document.getElementById('section-cta');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    openModal('modal-access');
+                }, 800);
+            } else {
+                openModal('modal-access');
+            }
         }
         function closeModal(id) {
             const modal = document.getElementById(id);
