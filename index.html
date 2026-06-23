@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="fr">
 
@@ -1331,6 +1331,131 @@
             border-top: 1px solid rgba(255,255,255,0.06);
             margin: 1.5rem 0;
         }
+        /* ===== FORMULAIRE COACH ===== */
+        .coach-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .coach-form-grid { grid-template-columns: 1fr; }
+        }
+        .cf {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+        .cf.full { grid-column: 1 / -1; }
+        .cf label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #d4d4d8;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .cf input:not([type="checkbox"]),
+        .cf select,
+        .cf textarea {
+            background: rgba(255,255,255,0.045);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.75rem;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+        }
+        .cf select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23a1a1aa'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+        .cf select option { background: #1a1a1c; color: #fff; }
+        .cf textarea { min-height: 90px; resize: vertical; }
+        .cf input:not([type="checkbox"]):focus,
+        .cf select:focus,
+        .cf textarea:focus {
+            border-color: rgba(237,171,24,0.55);
+            background: rgba(237,171,24,0.04);
+            box-shadow: 0 0 0 3px rgba(237,171,24,0.08);
+        }
+        .cf input::placeholder,
+        .cf textarea::placeholder { color: rgba(255,255,255,0.22); }
+        .coach-section-sep {
+            grid-column: 1 / -1;
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin: 0.25rem 0;
+        }
+        .coach-section-label {
+            grid-column: 1 / -1;
+            color: #EDAB18;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        .coach-section-label::before {
+            content: "";
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(to bottom, #F5C842, #EDAB18);
+            border-radius: 99px;
+        }
+        .coach-submit-btn {
+            grid-column: 1 / -1;
+            margin-top: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #F5C842, #EDAB18);
+            border: none;
+            border-radius: 0.875rem;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            letter-spacing: 0.01em;
+            font-family: inherit;
+        }
+        .coach-submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 36px rgba(237,171,24,0.4);
+        }
+        .coach-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .coach-msg {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 0.8rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: none;
+        }
+        .coach-msg.success {
+            display: block;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: #4ade80;
+        }
+        .coach-msg.error {
+            display: block;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #f87171;
+        }
+        .cf-honeypot { display: none !important; }
+
         /* Footer social icons */
         .footer-social-link {
             display: flex;
@@ -1785,7 +1910,7 @@
                             Développez votre visibilité, recevez des demandes de cours et faites grandir votre activité
                             avec CourtLinker.
                         </p>
-                        <button
+                        <button onclick="openModal('modal-coach')"
                             class="bg-primary text-on-primary font-bold px-10 py-4 rounded-xl hover:opacity-90 transition-all">
                             Rejoindre CourtLinker en tant que coach
                         </button>
@@ -1828,11 +1953,8 @@
                 <p class="text-on-surface-variant text-xl mb-12">
                     Inscris-toi pour être informé du lancement et accéder en avant-première à l’application.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                    <input
-                        class="flex-1 bg-surface-container-high border-none rounded-xl px-6 py-4 text-white focus:ring-2 focus:ring-primary placeholder:text-zinc-600"
-                        placeholder="ton@email.com" type="email" />
-                    <button
+                <div class="flex justify-center max-w-lg mx-auto">
+                    <button onclick="openModal('modal-access')"
                         class="bg-primary text-on-primary font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-all whitespace-nowrap">
                         Recevoir un accès anticipé
                     </button>
@@ -1870,6 +1992,11 @@
                         </svg>
                     </a>
                 </div>
+
+                <a href="mailto:contact@courtlinker.com"
+                  class="text-zinc-500 text-sm hover:text-[#EDAB18] transition-colors">
+                   contact@courtlinker.com
+                </a>
                 <div class="text-zinc-500 text-sm">© 2026 Antigoneagency</div>
             </div>
         </div>
@@ -2122,6 +2249,193 @@
         <span class="material-symbols-outlined">arrow_upward</span>
     </button>
 
+    <!-- ===== MODALE COACH ===== -->
+    <div id="modal-coach" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-coach-title">
+        <div class="modal-backdrop" onclick="closeModal('modal-coach')"></div>
+        <div class="modal-card max-w-2xl">
+            <div class="modal-head">
+                <span class="modal-head-title" id="modal-coach-title">Rejoindre CourtLinker en tant que coach</span>
+                <button class="modal-close-btn" onclick="closeModal('modal-coach')" aria-label="Fermer">
+                    <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+                </button>
+            </div>
+            <div class="modal-content">
+                <form id="coach-application-form" action="send-coach-application.php" method="POST">
+                    <!-- Honeypot anti-spam -->
+                    <input type="text" name="_honey" style="display:none">
+
+                    <div class="coach-form-grid">
+                        <!-- Section: Infos Perso -->
+                        <div class="coach-section-label">Informations personnelles</div>
+
+                        <div class="cf">
+                            <label for="coach-prenom">Prénom *</label>
+                            <input type="text" id="coach-prenom" name="prenom" required placeholder="Votre prénom">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-nom">Nom *</label>
+                            <input type="text" id="coach-nom" name="nom" required placeholder="Votre nom">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-telephone">Téléphone *</label>
+                            <input type="tel" id="coach-telephone" name="telephone" required placeholder="Ex: 06 12 34 56 78">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-email">Email *</label>
+                            <input type="email" id="coach-email" name="email" required placeholder="Ex: jean.dupont@email.com">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-ville">Ville *</label>
+                            <input type="text" id="coach-ville" name="ville" required placeholder="Ex: Paris">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-zone">Zone d'intervention *</label>
+                            <input type="text" id="coach-zone" name="zone_intervention" required placeholder="Ex: Paris et proche banlieue">
+                        </div>
+
+                        <!-- Section: Profil -->
+                        <div class="coach-section-sep"></div>
+                        <div class="coach-section-label">Profil professionnel</div>
+
+                        <div class="cf">
+                            <label for="coach-sport">Sport enseigné *</label>
+                            <select id="coach-sport" name="sport_enseigne" required>
+                                <option value="" disabled selected>Choisir un sport</option>
+                                <option value="Tennis">Tennis</option>
+                                <option value="Padel">Padel</option>
+                                <option value="Tennis & Padel">Tennis &amp; Padel</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-experience">Années d'expérience *</label>
+                            <input type="number" id="coach-experience" name="annees_experience" min="0" required placeholder="Ex: 5">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-tarif">Tarif horaire souhaité (€/h) *</label>
+                            <input type="text" id="coach-tarif" name="tarif_horaire" required placeholder="Ex: 50 €/h">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-dispo">Disponibilités *</label>
+                            <input type="text" id="coach-dispo" name="disponibilites" required placeholder="Ex: Soirs en semaine et week-ends">
+                        </div>
+
+                        <div class="cf full">
+                            <label>Niveau des joueurs ciblés *</label>
+                            <div class="grid grid-cols-2 gap-3 mt-1">
+                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
+                                    <input type="checkbox" name="niveau_joueurs" value="Débutant" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
+                                    <span>Débutant</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
+                                    <input type="checkbox" name="niveau_joueurs" value="Intermédiaire" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
+                                    <span>Intermédiaire</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
+                                    <input type="checkbox" name="niveau_joueurs" value="Avancé" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
+                                    <span>Avancé</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
+                                    <input type="checkbox" name="niveau_joueurs" value="Compétition" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
+                                    <span>Compétition</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="cf full">
+                            <label for="coach-diplomes">Diplômes / Certifications (optionnel)</label>
+                            <textarea id="coach-diplomes" name="diplomes_certifications" placeholder="Listez vos diplômes de tennis, de padel ou autres certifications..."></textarea>
+                        </div>
+
+                        <div class="cf full">
+                            <label for="coach-bio">Bio courte du coach *</label>
+                            <textarea id="coach-bio" name="bio" required placeholder="Parlez-nous de vous, de votre parcours, et de votre philosophie d'enseignement..."></textarea>
+                        </div>
+
+                        <!-- Section: Liens -->
+                        <div class="coach-section-sep"></div>
+                        <div class="coach-section-label">Liens externes (Optionnel)</div>
+
+                        <div class="cf">
+                            <label for="coach-instagram">Lien Instagram</label>
+                            <input type="url" id="coach-instagram" name="instagram" placeholder="https://instagram.com/votre_profil">
+                        </div>
+
+                        <div class="cf">
+                            <label for="coach-portfolio">Lien Portfolio / Site web</label>
+                            <input type="url" id="coach-portfolio" name="portfolio" placeholder="https://votre-site.com">
+                        </div>
+
+                        <!-- Messages Status -->
+                        <div id="coach-form-msg" class="coach-msg"></div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="coach-submit-btn" class="coach-submit-btn">
+                            Envoyer ma candidature
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODALE ACCÈS ANTICIPÉ ===== -->
+    <div id="modal-access" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-access-title">
+        <div class="modal-backdrop" onclick="closeModal('modal-access')"></div>
+        <div class="modal-card max-w-lg">
+            <div class="modal-head">
+                <span class="modal-head-title" id="modal-access-title">Recevoir un accès anticipé</span>
+                <button class="modal-close-btn" onclick="closeModal('modal-access')" aria-label="Fermer">
+                    <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+                </button>
+            </div>
+            <div class="modal-content">
+                <form id="early-access-form" action="send-early-access.php" method="POST">
+                    <!-- Honeypot anti-spam -->
+                    <input type="text" name="_honey" style="display:none">
+
+                    <div class="coach-form-grid">
+                        <div class="cf">
+                            <label for="access-prenom">Prénom *</label>
+                            <input type="text" id="access-prenom" name="prenom" required placeholder="Votre prénom">
+                        </div>
+
+                        <div class="cf">
+                            <label for="access-nom">Nom *</label>
+                            <input type="text" id="access-nom" name="nom" required placeholder="Votre nom">
+                        </div>
+
+                        <div class="cf full">
+                            <label for="access-ville">Ville *</label>
+                            <input type="text" id="access-ville" name="ville" required placeholder="Ex: Paris">
+                        </div>
+
+                        <div class="cf full">
+                            <label for="access-email">Email *</label>
+                            <input type="email" id="access-email" name="email" required placeholder="Ex: jean.dupont@email.com">
+                        </div>
+
+                        <!-- Messages Status -->
+                        <div id="access-form-msg" class="coach-msg"></div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="access-submit-btn" class="coach-submit-btn">
+                            Envoyer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== MODALE CGV ===== -->
     <div id="modal-cgv" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-cgv-title">
         <div class="modal-backdrop" onclick="closeModal('modal-cgv')"></div>
@@ -2185,7 +2499,7 @@
                 <p class="modal-para"><span class="modal-highlight">Jalti Jabrane</span></p>
                 <ul class="modal-list">
                     <li>Numéro SIRET : <span class="modal-highlight">98984472500014</span></li>
-                    <li>Contact DPO : <a href="mailto:contact@courtlinker.app" class="modal-highlight" style="text-decoration:underline;text-underline-offset:3px;">contact@courtlinker.app</a></li>
+                    <li>Contact DPO : <a href="mailto:contact@courtlinker.com" class="modal-highlight" style="text-decoration:underline;text-underline-offset:3px;">contact@courtlinker.com</a></li>
                 </ul>
 
                 <p class="modal-section-title">2. Données collectées</p>
@@ -2254,6 +2568,155 @@
                 });
                 document.body.style.overflow = '';
             }
+        });
+
+        // Validation et envoi du formulaire Coach
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('coach-application-form');
+            if (!form) return;
+
+            const submitBtn = document.getElementById('coach-submit-btn');
+            const msgBox = document.getElementById('coach-form-msg');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Validation supplémentaire pour le niveau des joueurs (au moins une checkbox)
+                const checkboxes = form.querySelectorAll('input[name="niveau_joueurs"]:checked');
+                if (checkboxes.length === 0) {
+                    msgBox.className = 'coach-msg error';
+                    msgBox.innerText = 'Veuillez sélectionner au moins un niveau pour les joueurs ciblés.';
+                    msgBox.style.display = 'block';
+                    return;
+                }
+
+                // Masquer le message d'erreur précédent
+                msgBox.style.display = 'none';
+
+                // Activer l'état de chargement
+                submitBtn.disabled = true;
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = 'Envoi en cours...';
+
+                // Préparer les données pour le script PHP
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(async response => {
+                    const isJson = response.headers.get('content-type')?.includes('application/json');
+                    const data = isJson ? await response.json() : null;
+
+                    if (!response.ok) {
+                        const errorMsg = (data && data.message) ? data.message : 'Une erreur est survenue lors de l\'envoi de votre candidature.';
+                        throw new Error(errorMsg);
+                    }
+                    return data;
+                })
+                .then(data => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+
+                    // Message de succès
+                    msgBox.className = 'coach-msg success';
+                    msgBox.innerText = data.message || 'Merci, votre candidature a bien été envoyée.';
+                    msgBox.style.display = 'block';
+
+                    // Reset du formulaire
+                    form.reset();
+
+                    // Fermer la modale après un court délai pour laisser le temps de lire le message
+                    setTimeout(() => {
+                        closeModal('modal-coach');
+                        // Réinitialiser le message d'état
+                        msgBox.style.display = 'none';
+                    }, 3500);
+                })
+                .catch(error => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+
+                    // Message d'erreur personnalisé
+                    msgBox.className = 'coach-msg error';
+                    msgBox.innerText = error.message || 'Une erreur est survenue lors de l\'envoi de votre candidature. Veuillez réessayer.';
+                    msgBox.style.display = 'block';
+                });
+            });
+        });
+
+        // Validation et envoi du formulaire Accès Anticipé
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('early-access-form');
+            if (!form) return;
+
+            const submitBtn = document.getElementById('access-submit-btn');
+            const msgBox = document.getElementById('access-form-msg');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Masquer le message d'erreur précédent
+                msgBox.style.display = 'none';
+
+                // Activer l'état de chargement
+                submitBtn.disabled = true;
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = 'Envoi en cours...';
+
+                // Préparer les données pour le script PHP
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(async response => {
+                    const isJson = response.headers.get('content-type')?.includes('application/json');
+                    const data = isJson ? await response.json() : null;
+
+                    if (!response.ok) {
+                        const errorMsg = (data && data.message) ? data.message : 'Une erreur est survenue lors de votre inscription.';
+                        throw new Error(errorMsg);
+                    }
+                    return data;
+                })
+                .then(data => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+
+                    // Message de succès
+                    msgBox.className = 'coach-msg success';
+                    msgBox.innerText = data.message || 'Merci, votre inscription a bien été enregistrée.';
+                    msgBox.style.display = 'block';
+
+                    // Reset du formulaire
+                    form.reset();
+
+                    // Fermer la modale après un court délai pour laisser le temps de lire le message
+                    setTimeout(() => {
+                        closeModal('modal-access');
+                        // Réinitialiser le message d\'état
+                        msgBox.style.display = 'none';
+                    }, 3500);
+                })
+                .catch(error => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+
+                    // Message d\'erreur
+                    msgBox.className = 'coach-msg error';
+                    msgBox.innerText = error.message || 'Une erreur est survenue lors de votre inscription. Veuillez réessayer.';
+                    msgBox.style.display = 'block';
+                });
+            });
         });
     </script>
 
