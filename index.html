@@ -1972,6 +1972,7 @@
             <div class="flex flex-wrap justify-center gap-6 text-zinc-500 font-medium text-sm">
                 <button onclick="openModal('modal-cgv')" style="background:none;border:none;padding:0;font-family:inherit;" class="hover:text-[#EDAB18] transition-colors cursor-pointer text-zinc-500 font-medium text-sm">Conditions Générales de Vente</button>
                 <button onclick="openModal('modal-rgpd')" style="background:none;border:none;padding:0;font-family:inherit;" class="hover:text-[#EDAB18] transition-colors cursor-pointer text-zinc-500 font-medium text-sm">Politique de confidentialité</button>
+                <button onclick="openModal('modal-mentions')" style="background:none;border:none;padding:0;font-family:inherit;" class="hover:text-[#EDAB18] transition-colors cursor-pointer text-zinc-500 font-medium text-sm">Mentions Légales</button>
             </div>
 
             <!-- Réseaux sociaux + copyright -->
@@ -2538,6 +2539,41 @@
                 <ul class="modal-list">
                     <li><span class="modal-highlight">Cookies techniques</span> : indispensables au fonctionnement.</li>
                     <li><span class="modal-highlight">Cookies d’analyse</span> (Google Analytics) : consentement via bannière.</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODALE MENTIONS LÉGALES ===== -->
+    <div id="modal-mentions" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-mentions-title">
+        <div class="modal-backdrop" onclick="closeModal('modal-mentions')"></div>
+        <div class="modal-card">
+            <div class="modal-head">
+                <span class="modal-head-title" id="modal-mentions-title">Mentions Légales</span>
+                <button class="modal-close-btn" onclick="closeModal('modal-mentions')" aria-label="Fermer">
+                    <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+                </button>
+            </div>
+            <div class="modal-content">
+
+                <p class="modal-section-title">Éditeur du site</p>
+                <ul class="modal-list">
+                    <li>Nom : <span class="modal-highlight">Jalti Jabrane</span></li>
+                    <li>Statut juridique : <span class="modal-highlight">Auto-entrepreneur</span></li>
+                    <li>SIRET : <span class="modal-highlight">98984472500014</span></li>
+                    <li>Adresse : <span class="modal-highlight">59 rue de Ponthieu, bureau 326, PARIS 75008</span></li>
+                    <li>E-mail : <a href="mailto:contact@courtlinker.com" class="modal-highlight" style="text-decoration:underline;text-underline-offset:3px;">contact@courtlinker.com</a></li>
+                </ul>
+
+                <p class="modal-section-title">Hébergement du site</p>
+                <p class="modal-para">Le site <span class="modal-highlight">courtlinker.com</span> est hébergé par :</p>
+                <p class="modal-para" style="font-weight:bold;margin-bottom:0.5rem;color:#fff;">HOSTINGER operations, UAB</p>
+                <ul class="modal-list">
+                    <li>Adresse : <span class="modal-highlight">Švitrigailos str. 34, Vilnius 03230, Lituanie</span></li>
+                    <li>Téléphone : <span class="modal-highlight">+370 645 03378</span></li>
+                    <li>E-mail : <a href="mailto:domains@hostinger.com" class="modal-highlight" style="text-decoration:underline;text-underline-offset:3px;">domains@hostinger.com</a></li>
+                    <li>Site web : <a href="http://www.hostinger.com" target="_blank" rel="noopener noreferrer" class="modal-highlight" style="text-decoration:underline;text-underline-offset:3px;">www.hostinger.com</a></li>
                 </ul>
 
             </div>
