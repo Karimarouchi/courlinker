@@ -150,19 +150,23 @@ $user_body = '
                         <td style="padding:40px;">
                             <h2 style="margin:0 0 15px 0;font-size:20px;color:#ffffff;font-family:\'Epilogue\', Arial, sans-serif;">Bonjour ' . $prenom . ',</h2>
                             <p style="margin:0 0 20px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
-                                Félicitations ! Votre demande d\'accès anticipé pour <strong>CourtLinker</strong> a bien été enregistrée. Vous faites désormais partie de la liste exclusive de nos membres fondateurs.
+                                Merci pour votre inscription à <strong>CourtLinker</strong>.
                             </p>
                             <p style="margin:0 0 20px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
-                                <strong>Ce que cela signifie pour vous :</strong>
+                                Votre demande a bien été enregistrée et vous serez parmi les premières personnes informées du lancement officiel de l\'application.
                             </p>
-                            <ul style="margin:0 0 25px 0;padding-left:20px;font-size:14px;line-height:1.6;color:#d4d4d8;">
-                                <li>Vous recevrez une notification privée dès le lancement officiel de l\'application dans votre ville (' . $ville . ').</li>
-                                <li>Vous bénéficierez de fonctionnalités premium gratuites réservées aux premiers inscrits.</li>
-                                <li>Vous pourrez créer votre profil de joueur en priorité et réserver vos terrains et cours préférés de Tennis &amp; Padel.</li>
+                            <p style="margin:0 0 15px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
+                                <strong>Ce qui vous attend :</strong>
+                            </p>
+                            <ul style="margin:0 0 25px 0;padding-left:20px;font-size:14px;line-height:1.8;color:#d4d4d8;">
+                                <li>Une notification dès l\'ouverture de CourtLinker.</li>
+                                <li>La possibilité de créer votre profil joueur ou coach.</li>
+                                <li>Un accès aux premières fonctionnalités de la plateforme.</li>
+                                <li>L\'opportunité de rejoindre les premiers membres de la communauté CourtLinker.</li>
                             </ul>
                             
                             <p style="margin:0 0 30px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
-                                Nous travaillons dur pour finaliser l\'application et nous avons hâte de vous retrouver sur les courts !
+                                Nous finalisons actuellement les derniers détails avant le lancement et avons hâte de vous accueillir prochainement.
                             </p>
 
                             <p style="margin:0 0 30px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">

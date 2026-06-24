@@ -191,7 +191,7 @@ $admin_body = '
                     <!-- Footer -->
                     <tr>
                         <td align="center" style="padding:25px 40px;border-top:1px solid #262626;background-color:#0b0b0c;font-size:12px;color:#71717a;">
-                            Ce message a été envoyé automatiquement depuis le formulaire d'inscription coach de CourtLinker.
+                            Ce message a été envoyé automatiquement depuis le formulaire d inscription coach de CourtLinker.
                         </td>
                     </tr>
                 </table>
