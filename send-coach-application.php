@@ -1,10 +1,10 @@
 <?php
 /**
  * Backend d'envoi SMTP pour le formulaire de candidature coach.
+ * Champs : prenom, nom, ville, email
  * Utilise PHPMailer et la configuration SMTP Hostinger.
  */
 
-// Permettre les requêtes CORS si nécessaire (facultatif mais propre)
 header('Content-Type: application/json; charset=UTF-8');
 
 // Empêcher l'accès direct en GET
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Protection honeypot contre le spam
 if (!empty($_POST['_honey'])) {
-    // Répondre un faux succès pour tromper le bot
     echo json_encode(['status' => 'success', 'message' => 'Merci, votre candidature a bien été envoyée.']);
     exit;
 }
@@ -40,44 +39,21 @@ use PHPMailer\PHPMailer\Exception;
 
 // Récupérer et assainir les champs
 $prenom = isset($_POST['prenom']) ? htmlspecialchars(trim($_POST['prenom'])) : '';
-$nom = isset($_POST['nom']) ? htmlspecialchars(trim($_POST['nom'])) : '';
-$telephone = isset($_POST['telephone']) ? htmlspecialchars(trim($_POST['telephone'])) : '';
-$email = isset($_POST['email']) ? filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL) : '';
-$ville = isset($_POST['ville']) ? htmlspecialchars(trim($_POST['ville'])) : '';
-$zone_intervention = isset($_POST['zone_intervention']) ? htmlspecialchars(trim($_POST['zone_intervention'])) : '';
-$sport_enseigne = isset($_POST['sport_enseigne']) ? htmlspecialchars(trim($_POST['sport_enseigne'])) : '';
-$annees_experience = isset($_POST['annees_experience']) ? (int)$_POST['annees_experience'] : '';
-$tarif_horaire = isset($_POST['tarif_horaire']) ? htmlspecialchars(trim($_POST['tarif_horaire'])) : '';
-$disponibilites = isset($_POST['disponibilites']) ? htmlspecialchars(trim($_POST['disponibilites'])) : '';
-$bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : '';
-
-// Optionnels
-$diplomes = isset($_POST['diplomes_certifications']) ? htmlspecialchars(trim($_POST['diplomes_certifications'])) : '';
-$instagram = isset($_POST['instagram']) ? filter_var(trim($_POST['instagram']), FILTER_SANITIZE_URL) : '';
-$portfolio = isset($_POST['portfolio']) ? filter_var(trim($_POST['portfolio']), FILTER_SANITIZE_URL) : '';
-
-// Gestion des niveaux des joueurs (checkboxes)
-$niveaux = [];
-if (isset($_POST['niveau_joueurs'])) {
-    if (is_array($_POST['niveau_joueurs'])) {
-        foreach ($_POST['niveau_joueurs'] as $n) {
-            $niveaux[] = htmlspecialchars($n);
-        }
-    } else {
-        $niveaux[] = htmlspecialchars($_POST['niveau_joueurs']);
-    }
-}
-$niveau_joueurs_str = !empty($niveaux) ? implode(', ', $niveaux) : '';
+$nom    = isset($_POST['nom'])    ? htmlspecialchars(trim($_POST['nom']))    : '';
+$ville  = isset($_POST['ville'])  ? htmlspecialchars(trim($_POST['ville']))  : '';
+$email  = isset($_POST['email'])  ? filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL) : '';
 
 // Validation des champs obligatoires
-if (
-    empty($prenom) || empty($nom) || empty($telephone) || empty($email) || 
-    empty($ville) || empty($zone_intervention) || empty($sport_enseigne) || 
-    empty($niveau_joueurs_str) || $annees_experience === '' || 
-    empty($disponibilites) || empty($tarif_horaire) || empty($bio)
-) {
+if (empty($prenom) || empty($nom) || empty($ville) || empty($email)) {
     http_response_code(400);
     echo json_encode(['status' => 'error', 'message' => 'Veuillez remplir tous les champs obligatoires.']);
+    exit;
+}
+
+// Validation longueur minimale
+if (mb_strlen($prenom) < 2 || mb_strlen($nom) < 2 || mb_strlen($ville) < 2) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Certains champs sont trop courts (minimum 2 caractères).']);
     exit;
 }
 
@@ -86,20 +62,6 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['status' => 'error', 'message' => 'Adresse e-mail invalide.']);
     exit;
 }
-
-// Fonction de construction des lignes optionnelles pour le tableau admin
-function buildOptionalRow($label, $value) {
-    if (empty($value)) return '';
-    return '<tr style="border-bottom:1px solid #262626;">
-        <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">' . $label . '</td>
-        <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $value . '</td>
-    </tr>';
-}
-
-// Préparer les variables pour l'insertion HTML
-$diplomes_row = buildOptionalRow('Diplômes / Certifications', nl2br($diplomes));
-$instagram_row = buildOptionalRow('Instagram', !empty($instagram) ? '<a href="' . $instagram . '" style="color:#EDAB18;text-decoration:none;" target="_blank">' . $instagram . '</a>' : '');
-$portfolio_row = buildOptionalRow('Portfolio', !empty($portfolio) ? '<a href="' . $portfolio . '" style="color:#EDAB18;text-decoration:none;" target="_blank">' . $portfolio . '</a>' : '');
 
 // ---- EMAIL 1 : ADMIN NOTIFICATION ----
 $admin_body = '
@@ -122,67 +84,39 @@ $admin_body = '
                             <p style="margin:5px 0 0 0;font-size:14px;color:#ababab;text-transform:uppercase;letter-spacing:0.1em;">Nouvelle Candidature Coach</p>
                         </td>
                     </tr>
+                    <!-- Badge -->
+                    <tr>
+                        <td align="center" style="padding:20px 40px 0 40px;">
+                            <span style="display:inline-block;padding:6px 18px;background:linear-gradient(135deg,#F5C842,#EDAB18);border-radius:99px;font-size:12px;font-weight:800;color:#000;text-transform:uppercase;letter-spacing:0.1em;">🎾 Candidature reçue</span>
+                        </td>
+                    </tr>
                     <!-- Content -->
                     <tr>
-                        <td style="padding:40px;">
+                        <td style="padding:30px 40px 40px 40px;">
                             <p style="margin:0 0 25px 0;font-size:16px;line-height:1.6;color:#ffffff;">
-                                Un nouveau coach vient de postuler pour rejoindre la communauté CourtLinker. Voici les détails de sa candidature :
+                                Un nouveau coach souhaite rejoindre la communauté CourtLinker. Voici ses coordonnées :
                             </p>
-                            
-                            <!-- Table of details -->
-                            <table width="100%" border="0" cellspacing="0" cellpadding="12" style="border-collapse:collapse;margin-bottom:30px;background-color:#191919;border-radius:12px;overflow:hidden;">
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td width="40%" style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Prénom &amp; Nom</td>
-                                    <td width="60%" style="font-size:15px;color:#ffffff;font-weight:600;padding-right:15px;">' . $prenom . ' ' . $nom . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Téléphone</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;"><a href="tel:' . $telephone . '" style="color:#ffffff;text-decoration:none;">' . $telephone . '</a></td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Email</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;"><a href="mailto:' . $email . '" style="color:#EDAB18;text-decoration:none;">' . $email . '</a></td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Ville</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $ville . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Zone d\'intervention</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $zone_intervention . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Sport enseigné</td>
-                                    <td style="font-size:15px;color:#ffffff;font-weight:bold;padding-right:15px;">' . $sport_enseigne . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Niveau des joueurs</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $niveau_joueurs_str . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Années d\'expérience</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $annees_experience . ' ans</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Tarif horaire</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;font-weight:bold;">' . $tarif_horaire . '</td>
-                                </tr>
-                                <tr style="border-bottom:1px solid #262626;">
-                                    <td style="font-size:13px;font-weight:bold;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;padding-left:15px;">Disponibilités</td>
-                                    <td style="font-size:15px;color:#ffffff;padding-right:15px;">' . $disponibilites . '</td>
-                                </tr>
-                                ' . $diplomes_row . '
-                                ' . $instagram_row . '
-                                ' . $portfolio_row . '
-                            </table>
 
-                            <h3 style="margin:0 0 10px 0;font-size:15px;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;">Bio du coach</h3>
-                            <div style="background-color:#191919;border-left:3px solid #EDAB18;padding:15px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.6;color:#d4d4d8;margin-bottom:30px;white-space:pre-wrap;">' . $bio . '</div>
+                            <!-- Table of details -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse;margin-bottom:30px;border-radius:12px;overflow:hidden;">
+                                <tr style="background-color:#1a1a1a;border-bottom:1px solid #2a2a2a;">
+                                    <td width="40%" style="padding:14px 16px;font-size:12px;font-weight:700;color:#EDAB18;text-transform:uppercase;letter-spacing:0.08em;">Prénom &amp; Nom</td>
+                                    <td width="60%" style="padding:14px 16px;font-size:15px;color:#ffffff;font-weight:600;">' . $prenom . ' ' . $nom . '</td>
+                                </tr>
+                                <tr style="background-color:#161616;border-bottom:1px solid #2a2a2a;">
+                                    <td style="padding:14px 16px;font-size:12px;font-weight:700;color:#EDAB18;text-transform:uppercase;letter-spacing:0.08em;">Email</td>
+                                    <td style="padding:14px 16px;font-size:15px;color:#ffffff;"><a href="mailto:' . $email . '" style="color:#EDAB18;text-decoration:none;">' . $email . '</a></td>
+                                </tr>
+                                <tr style="background-color:#1a1a1a;">
+                                    <td style="padding:14px 16px;font-size:12px;font-weight:700;color:#EDAB18;text-transform:uppercase;letter-spacing:0.08em;">Ville</td>
+                                    <td style="padding:14px 16px;font-size:15px;color:#ffffff;">' . $ville . '</td>
+                                </tr>
+                            </table>
 
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td align="center">
-                                        <a href="mailto:' . $email . '" style="display:inline-block;padding:14px 30px;background:linear-gradient(135deg, #F5C842, #EDAB18);color:#000000;text-decoration:none;border-radius:10px;font-weight:bold;font-size:15px;box-shadow:0 4px 15px rgba(237,171,24,0.3);">Répondre par e-mail</a>
+                                        <a href="mailto:' . $email . '" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg, #F5C842, #EDAB18);color:#000000;text-decoration:none;border-radius:10px;font-weight:800;font-size:15px;box-shadow:0 4px 20px rgba(237,171,24,0.35);letter-spacing:0.01em;">Répondre au coach</a>
                                     </td>
                                 </tr>
                             </table>
@@ -190,8 +124,9 @@ $admin_body = '
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td align="center" style="padding:25px 40px;border-top:1px solid #262626;background-color:#0b0b0c;font-size:12px;color:#71717a;">
-                            Ce message a été envoyé automatiquement depuis le formulaire d inscription coach de CourtLinker.
+                        <td align="center" style="padding:20px 40px;border-top:1px solid #262626;background-color:#0b0b0c;font-size:12px;color:#71717a;">
+                            Message envoyé automatiquement depuis le formulaire coach de CourtLinker.<br>
+                            © 2026 CourtLinker. Tous droits réservés.
                         </td>
                     </tr>
                 </table>
@@ -226,36 +161,37 @@ $candidate_body = '
                     <!-- Content -->
                     <tr>
                         <td style="padding:40px;">
-                            <h2 style="margin:0 0 15px 0;font-size:20px;color:#ffffff;font-family:\'Epilogue\', Arial, sans-serif;">Bonjour ' . $prenom . ',</h2>
-                            <p style="margin:0 0 20px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
-                                Merci pour l\'intérêt que vous portez à <strong>CourtLinker</strong> ! Nous avons bien reçu votre candidature pour rejoindre notre réseau de coachs partenaires de Tennis &amp; Padel.
+                            <h2 style="margin:0 0 16px 0;font-size:22px;color:#ffffff;font-family:\'Epilogue\', Arial, sans-serif;font-weight:700;">Bonjour ' . $prenom . ' 👋</h2>
+                            <p style="margin:0 0 20px 0;font-size:15px;line-height:1.7;color:#d4d4d8;">
+                                Merci pour votre intérêt envers <strong style="color:#ffffff;">CourtLinker</strong> ! Nous avons bien reçu votre candidature pour rejoindre notre réseau de coachs partenaires.
                             </p>
-                            <p style="margin:0 0 20px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
-                                Notre équipe examine actuellement vos informations et votre profil. Nous reviendrons vers vous très rapidement par téléphone ou par e-mail afin de valider ensemble les modalités de votre inscription et votre zone de cours.
+                            <p style="margin:0 0 24px 0;font-size:15px;line-height:1.7;color:#d4d4d8;">
+                                Notre équipe va examiner votre profil et reviendra vers vous <strong style="color:#EDAB18;">très rapidement</strong> par e-mail pour valider ensemble les modalités de votre inscription.
                             </p>
-                            
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin:30px 0;background-color:#191919;border-left:3px solid #EDAB18;border-radius:0 8px 8px 0;padding:20px;">
+
+                            <!-- Recap box -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin:0 0 30px 0;background-color:#191919;border-left:3px solid #EDAB18;border-radius:0 10px 10px 0;">
                                 <tr>
-                                    <td>
-                                        <h3 style="margin:0 0 8px 0;font-size:14px;color:#EDAB18;text-transform:uppercase;letter-spacing:0.05em;">Récapitulatif de votre profil :</h3>
-                                        <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.6;color:#d4d4d8;">
-                                            <li><strong>Sport :</strong> ' . $sport_enseigne . '</li>
-                                            <li><strong>Ville principale :</strong> ' . $ville . '</li>
-                                            <li><strong>Tarif horaire indiqué :</strong> ' . $tarif_horaire . '</li>
-                                        </ul>
+                                    <td style="padding:18px 20px;">
+                                        <p style="margin:0 0 10px 0;font-size:12px;font-weight:700;color:#EDAB18;text-transform:uppercase;letter-spacing:0.1em;">Votre candidature :</p>
+                                        <p style="margin:0;font-size:14px;line-height:1.7;color:#d4d4d8;">
+                                            <strong style="color:#fff;">Nom :</strong> ' . $prenom . ' ' . $nom . '<br>
+                                            <strong style="color:#fff;">Ville :</strong> ' . $ville . '<br>
+                                            <strong style="color:#fff;">Email :</strong> ' . $email . '
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
 
-                            <p style="margin:0 0 30px 0;font-size:15px;line-height:1.65;color:#d4d4d8;">
+                            <p style="margin:0 0 30px 0;font-size:15px;line-height:1.7;color:#d4d4d8;">
                                 À très bientôt sur les courts,<br>
-                                <strong>L\'équipe CourtLinker</strong>
+                                <strong style="color:#ffffff;">L\'équipe CourtLinker 🎾</strong>
                             </p>
 
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td align="center">
-                                        <a href="https://courtlinker.com" style="display:inline-block;padding:14px 30px;background:linear-gradient(135deg, #F5C842, #EDAB18);color:#000000;text-decoration:none;border-radius:10px;font-weight:bold;font-size:15px;box-shadow:0 4px 15px rgba(237,171,24,0.3);">Visiter notre site</a>
+                                        <a href="https://courtlinker.com" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg, #F5C842, #EDAB18);color:#000000;text-decoration:none;border-radius:10px;font-weight:800;font-size:15px;box-shadow:0 4px 20px rgba(237,171,24,0.35);">Visiter notre site</a>
                                     </td>
                                 </tr>
                             </table>
@@ -263,8 +199,8 @@ $candidate_body = '
                     </tr>
                     <!-- Footer -->
                     <tr>
-                        <td align="center" style="padding:25px 40px;border-top:1px solid #262626;background-color:#0b0b0c;font-size:12px;color:#71717a;">
-                            Vous recevez cet e-mail suite à votre demande d\'inscription sur CourtLinker.<br>
+                        <td align="center" style="padding:20px 40px;border-top:1px solid #262626;background-color:#0b0b0c;font-size:12px;color:#71717a;">
+                            Vous recevez cet e-mail suite à votre candidature sur CourtLinker.<br>
                             © 2026 CourtLinker. Tous droits réservés.
                         </td>
                     </tr>
@@ -278,76 +214,48 @@ $candidate_body = '
 
 // Initialisation et envoi via PHPMailer
 try {
-    // 1. Envoyer le mail à l'ADMIN de CourtLinker
-    $mailAdmin = new PHPMailer(true);
-    $mailAdmin->CharSet = 'UTF-8';
-    
-    // Config SMTP
-    $mailAdmin->isSMTP();
-    $mailAdmin->Host       = SMTP_HOST;
-    $mailAdmin->SMTPAuth   = true;
-    $mailAdmin->Username   = SMTP_USER;
-    $mailAdmin->Password   = SMTP_PASS;
-    
-    if (SMTP_SECURE === 'ssl') {
-        $mailAdmin->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    } else {
-        $mailAdmin->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    // Fonction helper pour configurer PHPMailer
+    function createMailer() {
+        $mail = new PHPMailer(true);
+        $mail->CharSet   = 'UTF-8';
+        $mail->isSMTP();
+        $mail->Host      = SMTP_HOST;
+        $mail->SMTPAuth  = true;
+        $mail->Username  = SMTP_USER;
+        $mail->Password  = SMTP_PASS;
+        $mail->SMTPSecure = (SMTP_SECURE === 'ssl') ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port      = SMTP_PORT;
+        return $mail;
     }
-    $mailAdmin->Port = SMTP_PORT;
 
-    // Destinataires
+    // 1. Mail ADMIN
+    $mailAdmin = createMailer();
     $mailAdmin->setFrom(MAIL_FROM, MAIL_FROM_NAME);
     $mailAdmin->addAddress(MAIL_TO);
-    $mailAdmin->addReplyTo($email, $prenom . ' ' . $nom); // Permet de répondre directement au coach
-
-    // Contenu
+    $mailAdmin->addReplyTo($email, $prenom . ' ' . $nom);
     $mailAdmin->isHTML(true);
-    $mailAdmin->Subject = 'Nouvelle candidature coach - CourtLinker';
+    $mailAdmin->Subject = '=?UTF-8?B?' . base64_encode('Nouvelle candidature coach - CourtLinker') . '?=';
     $mailAdmin->Body    = $admin_body;
-    $mailAdmin->AltBody = "Nouvelle candidature coach - CourtLinker\n\nNom: $prenom $nom\nEmail: $email\nTéléphone: $telephone\nSport: $sport_enseigne\nVille: $ville\nTarif: $tarif_horaire\nBio: $bio";
-
+    $mailAdmin->AltBody = "Nouvelle candidature coach - CourtLinker\n\nNom: $prenom $nom\nEmail: $email\nVille: $ville";
     $mailAdmin->send();
 
-    // 2. Envoyer le mail de confirmation de réception au CANDIDAT (Coach)
-    $mailCandidate = new PHPMailer(true);
-    $mailCandidate->CharSet = 'UTF-8';
-    
-    // Config SMTP
-    $mailCandidate->isSMTP();
-    $mailCandidate->Host       = SMTP_HOST;
-    $mailCandidate->SMTPAuth   = true;
-    $mailCandidate->Username   = SMTP_USER;
-    $mailCandidate->Password   = SMTP_PASS;
-    
-    if (SMTP_SECURE === 'ssl') {
-        $mailCandidate->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    } else {
-        $mailCandidate->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    }
-    $mailCandidate->Port = SMTP_PORT;
+    // 2. Mail CANDIDAT
+    $mailCand = createMailer();
+    $mailCand->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+    $mailCand->addAddress($email, $prenom . ' ' . $nom);
+    $mailCand->isHTML(true);
+    $mailCand->Subject = '=?UTF-8?B?' . base64_encode('Candidature reçue - CourtLinker') . '?=';
+    $mailCand->Body    = $candidate_body;
+    $mailCand->AltBody = "Bonjour $prenom,\n\nNous avons bien reçu votre candidature pour rejoindre CourtLinker en tant que coach à $ville. Notre équipe reviendra vers vous très prochainement.\n\nL'équipe CourtLinker";
+    $mailCand->send();
 
-    // Destinataires
-    $mailCandidate->setFrom(MAIL_FROM, MAIL_FROM_NAME);
-    $mailCandidate->addAddress($email, $prenom . ' ' . $nom);
-
-    // Contenu
-    $mailCandidate->isHTML(true);
-    $mailCandidate->Subject = 'Candidature reçue - CourtLinker';
-    $mailCandidate->Body    = $candidate_body;
-    $mailCandidate->AltBody = "Bonjour $prenom,\n\nMerci pour votre intérêt ! Nous avons bien reçu votre candidature pour rejoindre CourtLinker en tant que coach. Notre équipe va l'examiner et reviendra vers vous très prochainement.\n\nL'équipe CourtLinker";
-
-    $mailCandidate->send();
-
-    // Réponse JSON de succès
-    echo json_encode(['status' => 'success', 'message' => 'Merci, votre candidature a bien été envoyée.']);
+    echo json_encode(['status' => 'success', 'message' => 'Merci, votre candidature a bien été envoyée. Vous allez recevoir un e-mail de confirmation.']);
 
 } catch (Exception $e) {
-    // Si l'envoi échoue (ex: SMTP indisponible ou mauvais mot de passe)
     http_response_code(500);
     echo json_encode([
-        'status' => 'error', 
-        'message' => 'Une erreur est survenue lors de l\'envoi de votre candidature par e-mail.',
-        'debug' => $mailAdmin->ErrorInfo // Utile pour déboguer au début sur Hostinger
+        'status'  => 'error',
+        'message' => 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer.',
+        'debug'   => isset($mailAdmin) ? $mailAdmin->ErrorInfo : $e->getMessage()
     ]);
 }

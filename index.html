@@ -1458,6 +1458,19 @@
             color: #f87171;
         }
         .cf-honeypot { display: none !important; }
+        .field-error {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #ff7351;
+            margin-top: 4px;
+            min-height: 1rem;
+            letter-spacing: 0.01em;
+        }
+        .cf input:focus, .cf select:focus, .cf textarea:focus {
+            border-color: #EDAB18 !important;
+            box-shadow: 0 0 0 3px rgba(237,171,24,0.12);
+        }
 
         /* Footer social icons */
         .footer-social-link {
@@ -2265,118 +2278,45 @@
                 </button>
             </div>
             <div class="modal-content">
-                <form id="coach-application-form" action="send-coach-application.php" method="POST">
+                <form id="coach-application-form" action="send-coach-application.php" method="POST" novalidate>
                     <!-- Honeypot anti-spam -->
-                    <input type="text" name="_honey" style="display:none">
+                    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
                     <div class="coach-form-grid">
-                        <!-- Section: Infos Perso -->
+                        <!-- Section: Informations -->
                         <div class="coach-section-label">Informations personnelles</div>
 
                         <div class="cf">
-                            <label for="coach-prenom">Prénom *</label>
-                            <input type="text" id="coach-prenom" name="prenom" required placeholder="Votre prénom">
+                            <label for="coach-prenom">Prénom <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="coach-prenom" name="prenom" required placeholder="Votre prénom"
+                                minlength="2" maxlength="50"
+                                pattern="[A-Za-zÀ-ÿ\- ']+"
+                                autocomplete="given-name">
+                            <span class="field-error" id="err-coach-prenom"></span>
                         </div>
 
                         <div class="cf">
-                            <label for="coach-nom">Nom *</label>
-                            <input type="text" id="coach-nom" name="nom" required placeholder="Votre nom">
+                            <label for="coach-nom">Nom <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="coach-nom" name="nom" required placeholder="Votre nom"
+                                minlength="2" maxlength="50"
+                                pattern="[A-Za-zÀ-ÿ\- ']+"
+                                autocomplete="family-name">
+                            <span class="field-error" id="err-coach-nom"></span>
                         </div>
 
                         <div class="cf">
-                            <label for="coach-telephone">Téléphone *</label>
-                            <input type="tel" id="coach-telephone" name="telephone" required placeholder="Ex: 06 12 34 56 78">
+                            <label for="coach-ville">Ville <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="coach-ville" name="ville" required placeholder="Ex : Paris"
+                                minlength="2" maxlength="80"
+                                autocomplete="address-level2">
+                            <span class="field-error" id="err-coach-ville"></span>
                         </div>
 
                         <div class="cf">
-                            <label for="coach-email">Email *</label>
-                            <input type="email" id="coach-email" name="email" required placeholder="Ex: jean.dupont@email.com">
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-ville">Ville *</label>
-                            <input type="text" id="coach-ville" name="ville" required placeholder="Ex: Paris">
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-zone">Zone d'intervention *</label>
-                            <input type="text" id="coach-zone" name="zone_intervention" required placeholder="Ex: Paris et proche banlieue">
-                        </div>
-
-                        <!-- Section: Profil -->
-                        <div class="coach-section-sep"></div>
-                        <div class="coach-section-label">Profil professionnel</div>
-
-                        <div class="cf">
-                            <label for="coach-sport">Sport enseigné *</label>
-                            <select id="coach-sport" name="sport_enseigne" required>
-                                <option value="" disabled selected>Choisir un sport</option>
-                                <option value="Tennis">Tennis</option>
-                                <option value="Padel">Padel</option>
-                                <option value="Tennis & Padel">Tennis &amp; Padel</option>
-                                <option value="Autre">Autre</option>
-                            </select>
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-experience">Années d'expérience *</label>
-                            <input type="number" id="coach-experience" name="annees_experience" min="0" required placeholder="Ex: 5">
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-tarif">Tarif horaire souhaité (€/h) *</label>
-                            <input type="text" id="coach-tarif" name="tarif_horaire" required placeholder="Ex: 50 €/h">
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-dispo">Disponibilités *</label>
-                            <input type="text" id="coach-dispo" name="disponibilites" required placeholder="Ex: Soirs en semaine et week-ends">
-                        </div>
-
-                        <div class="cf full">
-                            <label>Niveau des joueurs ciblés *</label>
-                            <div class="grid grid-cols-2 gap-3 mt-1">
-                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-                                    <input type="checkbox" name="niveau_joueurs" value="Débutant" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
-                                    <span>Débutant</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-                                    <input type="checkbox" name="niveau_joueurs" value="Intermédiaire" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
-                                    <span>Intermédiaire</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-                                    <input type="checkbox" name="niveau_joueurs" value="Avancé" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
-                                    <span>Avancé</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer text-sm font-medium text-zinc-300 hover:text-white transition-colors">
-                                    <input type="checkbox" name="niveau_joueurs" value="Compétition" class="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary focus:ring-offset-zinc-950">
-                                    <span>Compétition</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="cf full">
-                            <label for="coach-diplomes">Diplômes / Certifications (optionnel)</label>
-                            <textarea id="coach-diplomes" name="diplomes_certifications" placeholder="Listez vos diplômes de tennis, de padel ou autres certifications..."></textarea>
-                        </div>
-
-                        <div class="cf full">
-                            <label for="coach-bio">Bio courte du coach *</label>
-                            <textarea id="coach-bio" name="bio" required placeholder="Parlez-nous de vous, de votre parcours, et de votre philosophie d'enseignement..."></textarea>
-                        </div>
-
-                        <!-- Section: Liens -->
-                        <div class="coach-section-sep"></div>
-                        <div class="coach-section-label">Liens externes (Optionnel)</div>
-
-                        <div class="cf">
-                            <label for="coach-instagram">Lien Instagram</label>
-                            <input type="url" id="coach-instagram" name="instagram" placeholder="https://instagram.com/votre_profil">
-                        </div>
-
-                        <div class="cf">
-                            <label for="coach-portfolio">Lien Portfolio / Site web</label>
-                            <input type="url" id="coach-portfolio" name="portfolio" placeholder="https://votre-site.com">
+                            <label for="coach-email">Email <span style="color:#ff7351">*</span></label>
+                            <input type="email" id="coach-email" name="email" required placeholder="Ex : jean.dupont@email.com"
+                                autocomplete="email">
+                            <span class="field-error" id="err-coach-email"></span>
                         </div>
 
                         <!-- Messages Status -->
@@ -2403,29 +2343,42 @@
                 </button>
             </div>
             <div class="modal-content">
-                <form id="early-access-form" action="send-early-access.php" method="POST">
+                <form id="early-access-form" action="send-early-access.php" method="POST" novalidate>
                     <!-- Honeypot anti-spam -->
-                    <input type="text" name="_honey" style="display:none">
+                    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
                     <div class="coach-form-grid">
                         <div class="cf">
-                            <label for="access-prenom">Prénom *</label>
-                            <input type="text" id="access-prenom" name="prenom" required placeholder="Votre prénom">
+                            <label for="access-prenom">Prénom <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="access-prenom" name="prenom" required placeholder="Votre prénom"
+                                minlength="2" maxlength="50"
+                                pattern="[A-Za-zÀ-ÿ\- ']+"
+                                autocomplete="given-name">
+                            <span class="field-error" id="err-access-prenom"></span>
                         </div>
 
                         <div class="cf">
-                            <label for="access-nom">Nom *</label>
-                            <input type="text" id="access-nom" name="nom" required placeholder="Votre nom">
+                            <label for="access-nom">Nom <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="access-nom" name="nom" required placeholder="Votre nom"
+                                minlength="2" maxlength="50"
+                                pattern="[A-Za-zÀ-ÿ\- ']+"
+                                autocomplete="family-name">
+                            <span class="field-error" id="err-access-nom"></span>
                         </div>
 
-                        <div class="cf full">
-                            <label for="access-ville">Ville *</label>
-                            <input type="text" id="access-ville" name="ville" required placeholder="Ex: Paris">
+                        <div class="cf">
+                            <label for="access-ville">Ville <span style="color:#ff7351">*</span></label>
+                            <input type="text" id="access-ville" name="ville" required placeholder="Ex : Paris"
+                                minlength="2" maxlength="80"
+                                autocomplete="address-level2">
+                            <span class="field-error" id="err-access-ville"></span>
                         </div>
 
-                        <div class="cf full">
-                            <label for="access-email">Email *</label>
-                            <input type="email" id="access-email" name="email" required placeholder="Ex: jean.dupont@email.com">
+                        <div class="cf">
+                            <label for="access-email">Email <span style="color:#ff7351">*</span></label>
+                            <input type="email" id="access-email" name="email" required placeholder="Ex : jean.dupont@email.com"
+                                autocomplete="email">
+                            <span class="field-error" id="err-access-email"></span>
                         </div>
 
                         <!-- Messages Status -->
@@ -2433,7 +2386,7 @@
 
                         <!-- Submit Button -->
                         <button type="submit" id="access-submit-btn" class="coach-submit-btn">
-                            Envoyer
+                            Recevoir mon accès anticipé
                         </button>
                     </div>
                 </form>
@@ -2621,152 +2574,177 @@
             }
         });
 
-        // Validation et envoi du formulaire Coach
+        // ── Utilitaire validation formulaires ────────────────────────────
+        function validateField(input, errorId) {
+            const error = document.getElementById(errorId);
+            if (!error) return true;
+            error.textContent = '';
+            input.style.borderColor = '';
+
+            if (!input.value.trim()) {
+                error.textContent = 'Ce champ est obligatoire.';
+                input.style.borderColor = '#ff7351';
+                return false;
+            }
+            if (input.minLength > 0 && input.value.trim().length < input.minLength) {
+                error.textContent = 'Minimum ' + input.minLength + ' caractères requis.';
+                input.style.borderColor = '#ff7351';
+                return false;
+            }
+            if (input.type === 'email') {
+                const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+                if (!emailReg.test(input.value.trim())) {
+                    error.textContent = 'Adresse e-mail invalide.';
+                    input.style.borderColor = '#ff7351';
+                    return false;
+                }
+            }
+            if (input.pattern) {
+                const reg = new RegExp('^(?:' + input.pattern + ')$');
+                if (!reg.test(input.value.trim())) {
+                    if (input.type === 'text' && input.id.includes('prenom') || input.id.includes('nom')) {
+                        error.textContent = 'Uniquement des lettres, tirets ou espaces.';
+                    } else {
+                        error.textContent = 'Format invalide.';
+                    }
+                    input.style.borderColor = '#ff7351';
+                    return false;
+                }
+            }
+            input.style.borderColor = '#4ade80';
+            return true;
+        }
+
+        function attachLiveValidation(form, fieldMap) {
+            Object.entries(fieldMap).forEach(([inputId, errorId]) => {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+                input.addEventListener('blur', () => validateField(input, errorId));
+                input.addEventListener('input', () => {
+                    if (input.style.borderColor === 'rgb(255, 115, 81)') {
+                        validateField(input, errorId);
+                    }
+                });
+            });
+        }
+
+        function sendForm(form, submitBtn, msgBox, modalId) {
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Envoi en cours...';
+            msgBox.style.display = 'none';
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson ? await response.json() : null;
+                if (!response.ok) {
+                    throw new Error((data && data.message) ? data.message : 'Une erreur est survenue. Veuillez réessayer.');
+                }
+                return data;
+            })
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+                msgBox.className = 'coach-msg success';
+                msgBox.innerText = data.message || 'Envoi réussi !';
+                msgBox.style.display = 'block';
+                form.reset();
+                form.querySelectorAll('input, textarea, select').forEach(el => el.style.borderColor = '');
+                form.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+                setTimeout(() => {
+                    closeModal(modalId);
+                    msgBox.style.display = 'none';
+                }, 3500);
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+                msgBox.className = 'coach-msg error';
+                msgBox.innerText = error.message || 'Une erreur est survenue. Veuillez réessayer.';
+                msgBox.style.display = 'block';
+            });
+        }
+
+        // ── Formulaire COACH ──────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('coach-application-form');
             if (!form) return;
 
             const submitBtn = document.getElementById('coach-submit-btn');
-            const msgBox = document.getElementById('coach-form-msg');
+            const msgBox   = document.getElementById('coach-form-msg');
+
+            const coachFields = {
+                'coach-prenom': 'err-coach-prenom',
+                'coach-nom':    'err-coach-nom',
+                'coach-ville':  'err-coach-ville',
+                'coach-email':  'err-coach-email'
+            };
+
+            attachLiveValidation(form, coachFields);
 
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
-
-                // Validation supplémentaire pour le niveau des joueurs (au moins une checkbox)
-                const checkboxes = form.querySelectorAll('input[name="niveau_joueurs"]:checked');
-                if (checkboxes.length === 0) {
+                // Valider tous les champs
+                let isValid = true;
+                Object.entries(coachFields).forEach(([inputId, errorId]) => {
+                    const input = document.getElementById(inputId);
+                    if (input && !validateField(input, errorId)) isValid = false;
+                });
+                if (!isValid) {
                     msgBox.className = 'coach-msg error';
-                    msgBox.innerText = 'Veuillez sélectionner au moins un niveau pour les joueurs ciblés.';
+                    msgBox.innerText = 'Veuillez corriger les erreurs dans le formulaire.';
                     msgBox.style.display = 'block';
+                    // Scroll vers le premier champ en erreur
+                    const firstError = form.querySelector('input[style*="rgb(255, 115, 81)"]');
+                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return;
                 }
-
-                // Masquer le message d'erreur précédent
                 msgBox.style.display = 'none';
-
-                // Activer l'état de chargement
-                submitBtn.disabled = true;
-                const originalText = submitBtn.innerText;
-                submitBtn.innerText = 'Envoi en cours...';
-
-                // Préparer les données pour le script PHP
-                const formData = new FormData(form);
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                })
-                .then(async response => {
-                    const isJson = response.headers.get('content-type')?.includes('application/json');
-                    const data = isJson ? await response.json() : null;
-
-                    if (!response.ok) {
-                        const errorMsg = (data && data.message) ? data.message : 'Une erreur est survenue lors de l\'envoi de votre candidature.';
-                        throw new Error(errorMsg);
-                    }
-                    return data;
-                })
-                .then(data => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalText;
-
-                    // Message de succès
-                    msgBox.className = 'coach-msg success';
-                    msgBox.innerText = data.message || 'Merci, votre candidature a bien été envoyée.';
-                    msgBox.style.display = 'block';
-
-                    // Reset du formulaire
-                    form.reset();
-
-                    // Fermer la modale après un court délai pour laisser le temps de lire le message
-                    setTimeout(() => {
-                        closeModal('modal-coach');
-                        // Réinitialiser le message d'état
-                        msgBox.style.display = 'none';
-                    }, 3500);
-                })
-                .catch(error => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalText;
-
-                    // Message d'erreur personnalisé
-                    msgBox.className = 'coach-msg error';
-                    msgBox.innerText = error.message || 'Une erreur est survenue lors de l\'envoi de votre candidature. Veuillez réessayer.';
-                    msgBox.style.display = 'block';
-                });
+                sendForm(form, submitBtn, msgBox, 'modal-coach');
             });
         });
 
-        // Validation et envoi du formulaire Accès Anticipé
+        // ── Formulaire ACCÈS ANTICIPÉ ─────────────────────────────────────
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('early-access-form');
             if (!form) return;
 
             const submitBtn = document.getElementById('access-submit-btn');
-            const msgBox = document.getElementById('access-form-msg');
+            const msgBox   = document.getElementById('access-form-msg');
+
+            const accessFields = {
+                'access-prenom': 'err-access-prenom',
+                'access-nom':    'err-access-nom',
+                'access-ville':  'err-access-ville',
+                'access-email':  'err-access-email'
+            };
+
+            attachLiveValidation(form, accessFields);
 
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
-
-                // Masquer le message d'erreur précédent
-                msgBox.style.display = 'none';
-
-                // Activer l'état de chargement
-                submitBtn.disabled = true;
-                const originalText = submitBtn.innerText;
-                submitBtn.innerText = 'Envoi en cours...';
-
-                // Préparer les données pour le script PHP
-                const formData = new FormData(form);
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                })
-                .then(async response => {
-                    const isJson = response.headers.get('content-type')?.includes('application/json');
-                    const data = isJson ? await response.json() : null;
-
-                    if (!response.ok) {
-                        const errorMsg = (data && data.message) ? data.message : 'Une erreur est survenue lors de votre inscription.';
-                        throw new Error(errorMsg);
-                    }
-                    return data;
-                })
-                .then(data => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalText;
-
-                    // Message de succès
-                    msgBox.className = 'coach-msg success';
-                    msgBox.innerText = data.message || 'Merci, votre inscription a bien été enregistrée.';
-                    msgBox.style.display = 'block';
-
-                    // Reset du formulaire
-                    form.reset();
-
-                    // Fermer la modale après un court délai pour laisser le temps de lire le message
-                    setTimeout(() => {
-                        closeModal('modal-access');
-                        // Réinitialiser le message d\'état
-                        msgBox.style.display = 'none';
-                    }, 3500);
-                })
-                .catch(error => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalText;
-
-                    // Message d\'erreur
-                    msgBox.className = 'coach-msg error';
-                    msgBox.innerText = error.message || 'Une erreur est survenue lors de votre inscription. Veuillez réessayer.';
-                    msgBox.style.display = 'block';
+                let isValid = true;
+                Object.entries(accessFields).forEach(([inputId, errorId]) => {
+                    const input = document.getElementById(inputId);
+                    if (input && !validateField(input, errorId)) isValid = false;
                 });
+                if (!isValid) {
+                    msgBox.className = 'coach-msg error';
+                    msgBox.innerText = 'Veuillez corriger les erreurs dans le formulaire.';
+                    msgBox.style.display = 'block';
+                    const firstError = form.querySelector('input[style*="rgb(255, 115, 81)"]');
+                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+                msgBox.style.display = 'none';
+                sendForm(form, submitBtn, msgBox, 'modal-access');
             });
         });
     </script>
